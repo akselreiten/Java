@@ -1,0 +1,52 @@
+Streams // Lambda
+
+	List<Person> people = new ArrayList<Person>(); 
+	people.add(new Person("Halvor","Reiten",40)); 
+	people.add(new Person("Gudrun","Colo",24)); 
+	people.add(new Person("Ingeborg","Crita",12)); 
+	people.add(new Person("Fredrik","Cangen",91)); 
+	people.add(new Person("Håkon","Drønnebekk",22));
+	
+	List<Person> cPeople = people.stream()
+			.filter((p) -> p.getLastName().startsWith("C"))
+			.collect(Collectors.toList());
+	
+	System.out.println(cPeople.getClass());
+	Collections.sort(cPeople, (p1,p2) -> p1.getAge() - p2.getAge());
+	
+	cPeople.stream().forEach((p) -> System.out.println(p)); 
+	
+	System.out.println(people.stream().anyMatch((p) -> p.getFirstName().equals("Halvor")));
+
+
+	Collection<Card> cards = Arrays.asList(new Card('S', 1), new Card('H', 2), new Card('D', 12), new Card('H', 13),
+				new Card('S',2));
+		
+	//Print out all cards with suit 'S'
+		cards.stream()
+		.filter((p) -> p.getSuit() == 'S')
+		.forEach((p) -> System.out.println(p));
+		
+
+	//Collect all cards with suit 'H' in new list 
+		Collection<Card> list = cards.stream()
+		.filter((p) -> p.getSuit() == 'H')
+		.collect(Collectors.toList());
+		
+	//For hvert kort, getSuit() og legg til i ny liste. 
+		List<Character> list1 = cards.stream()
+		.map(Card::getSuit)
+		.collect(Collectors.toList());
+		
+	//For hvert kort, getface(), legg sammen alle verdiene. 
+		Optional<Integer> sum = cards.stream()
+		.map(Card::getFace)
+		.reduce((a,b) -> a + b);
+		
+	//Finn ut om det er et kort som har suit 'D'
+		boolean bol = cards.stream()
+		.anyMatch((p) -> p.getSuit() == 'D');
+		
+	//Finn ut hvor mange distinkte kort det er i kortstokken. 
+		boolean bol1 = cards.stream()
+		.distinct().count() == 1;

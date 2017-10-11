@@ -1,0 +1,348 @@
+Eksamen 2012
+
+----Oppgave 1 - Innkapsling----
+
+a) 
+
+final-nøkkelordet betyr at hours og minutes-attributtene er "låste" til den verdien de settes til i konstruktøren. Dvs. at de ikke kan endres av andre metoder. Øker "lesbarheten" ved at man alltid er klar over hva attributtene referer til. Selv om at de er merket "public" så sikres innkapsling ved at feltene forblir korrekte.
+
+b) 
+
+deklarer verdien øverst i skriptet over konstruktøren med riktig type. Har get- og set-metoder (som er innkapslingen).
+
+f.eks.: 
+private String text; 
+public String getText(){
+	return text; 
+}
+public String setText(String newText){
+	text = newText;
+}
+
+c)
+
+I metoder som endrer en verdi i et objekt, så bør arguementene valideres. Dette må skje før selve endringen, og i tilfelle ugyldrige verdiger så kastes et unntak av typen IllegalArgumentException("...."). 
+
+public void setValue(int value){
+	if (value < 0){
+		throw new IllegalArguemntException("Value should be higher than zero");
+	}
+	this.value = value;
+}
+
+d)
+
+Bruker List<X> og ArrayList slik: 
+
+private List<Class> list = new ArrayList<Class>(); 
+public void addToList(Class object){
+	....
+}
+public void removeFromList(Class object){
+	....
+}
+
+Vi bruker det IKKE slik: 
+public class Class extends ArrayList<Class>{
+	
+}
+
+I det siste tilfellet trenger vi ikke add- og remove-metoder, fordi dette arves fra ArrayList-klassen.
+Når man arver så kan man ikke kun arve de metodene man vil arve, men man får "alle med på kjøpet". Dvs. at en vil være nødt til å redefinere alle man trenger skal være tilgjengelig. 
+
+
+----Oppgave 2 - Klasser ------
+
+public class DayTime {
+ 
+      public final int hours, minutes;
+ 
+      public DayTime(int hours, int minutes) {
+            this.hours = hours;
+            this.minutes = minutes;
+      }
+ 
+      public String toString() {
+            return hours + ":" + minutes;
+      }
+}
+
+public class TimeSlot {
+	
+	private final String text; 
+	private final int startH, startM, endH, endM, duration; 
+
+	public TimeSlot(String description, int startH, int startM, int duration) {
+		if (duration > 0 && startH > 0 && startH < 24 && startM >= 0 && startM < 60) {
+			this.startH = startH; 
+			this.startM = startM; 
+
+			this.duration = duration;
+
+			this.endH = startH + duration/60
+			this.endM = startM + duration - (duration/60)*60;
+		}
+	}
+
+	public DayTime getStartTime() {
+		DayTime startTime = new DayTime(startH,startM);
+		return startTime; 
+	}
+
+	public DayTime getEndTime() {
+		DayTime endTime = new DayTime(endH,endM); 
+		return endTime; 
+	}
+
+	public int getDuration(){
+		return duration; 
+	}
+
+
+	public String toString(){
+		return description + "@" + startH + ":" + startM + "-" + endH + ":" + endM; 
+	}
+
+b) 
+
+	public boolean contains(int hours, int minutes){
+		if (hours < startH || hours > endH || 
+			hours == startH && minutes < startM ||
+			hours == endH && minutes >= endM){
+			return false; 
+		} 
+		return true; 
+	}
+
+	public boolean overlaps(TimeSlot timeSlot){
+		if (this.contains(timeSlot.startH,timeSlot.startM) || 
+			this.contains(timeSlot.endH,timeSlot.endM)){
+				return true;
+			}
+		if (timeSlot.contains(startH,startM) || 
+			timeSlot.contains(endH,endM)){
+				return true;
+			}
+		return false;
+	}
+
+
+c) 
+
+Implementerer grensesnittet Comparable. 
+public class TimeSlot implements Comparable<TimeSlot>{
+	....
+
+	public int compareTo(TimeSlot timeSlot){
+		int diff = startH*60 + startM - timeSlot.startH*60 - timeSlot.startM; 
+		if (diff == 0){ //then starttime is the same. 
+			diff = endH*60 + endM - timeSlot.endH * 60 - timeSlot.endM;
+		}
+
+		return diff; 
+		//if diff is negative, then return -1
+		//if diff is positive, return 1, then 
+	}
+
+Med denne koden kan vi bruke Collections.sort() for å sortere TimeSlot-objekter. 
+
+}
+
+
+d) 
+
+public class DayPlan {
+	
+	List<TimeSlot> plan = new ArrayList<TimeSlot>(); 
+
+	public DayPlan(){
+
+	}
+
+	public void addTimeSlot(TimeSlot timeSlot){
+		if (!plan.contains(timeSlot)){
+			plan.add(timeSlot);
+			Collections.sort(plan) 
+		}
+	}
+
+	public void removeTimeSlot(TimeSlot timeSlot){
+		if (plan.contains(timeSlot)){
+			plan.remove(timeSlot); 
+		}
+	}
+
+	public TimeSlot getTimeSlotAt(Int hours, int minutes){
+		int minStartTime = 0;
+		TimeSlot minTimeSlot = null;
+		for (TimeSlot timeSlot : plan){
+			if timeSlot.contains(hours,minutes){
+				int startTime = timeSlot.startH*60 + timeSlot.startMin; 
+				if(startTime < minStartTime){
+					minStartTime = startTime; 
+					minTimeSlot = timeSlot;
+				}
+			}
+		}
+		return minTimeSlot.getStartTime; 
+	}
+
+	//ALTERNATIVT KUNNE JEG GJORT SLIK, for vi har jo sortert med Collections.sort
+
+	public TimeSlot getTimeSlotAt(int hours, int minutes){
+		for (TimeSlot timeSlot : plan){
+			if (timeSlot.contains(hours,minutes)){
+				return timeSlot;
+			}
+		}
+		return null;
+	}
+
+e) 
+
+	public boolean containsOverlapping(){
+		for (int i = 0; i<plan.size()-1; i++){
+			TimeSlot o1 = plan.get(i); 
+			TimeSlot o2 = plan.get(i+1);
+
+			if (o1.contains(o2.startH,o2.startM)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public TimeSlot difference(TimeSlot o1, TimeSlot o2){ 
+		int startTime2 = o2.startH * 60 + 02.startM; 
+		int endTime1 = o1.endH * 60 + o1.endM;
+		int endTime2 = o2.endH * 60 + o2.endM;
+		int diff = 0;
+
+		if (endTime1 < startTime2){
+			int diff = startTime2 - endTime1; 
+			TimeSlot timeSlot = new TimeSlot("Free time",o1.endH,o1.endM,diff)
+			return timeSlot; 
+		} 
+		return null;
+	}
+
+	public Collection<TimeSlot> getFreeTime(){
+		List<TimeSlot> freeTimeSlots = new ArrayList<TimeSlot>(); 
+
+		for (int i = 0; i<plan.size()-1;i++){
+			TimeSlot a = difference(plan.get(i),plan.get(i+1)
+			if (a != 0){
+				freeTimeSlots.add(a);
+			}
+		}
+	}
+
+} //class
+
+a) 
+
+public class TDT4100Lecture extends TimeSlot(){
+
+	public TDT4100Lecture(){
+		super("TDT4100-forelesning",10,15,105)
+	}
+
+}
+
+b) 
+
+public class TDT4100DayPlan extends DayPlan(){
+	
+	public TDT4100DayPlan(){
+		super();
+		TDT4100Lecture tdt4100lec = new TDT4100Lecture();
+		super.addTimeSlot(tdt4100lec;)
+	}
+
+	@Override
+	public void addTimeSlot(TimeSlot timeSlot){
+		if (timeSlot.overlaps(tdt4100Lexture)) {
+			throw new IllegalArguemntException("Cannot overwrite the holy TDT4100 lecture!")
+		}
+		super.addTimeSlot(timeSlot);
+	}
+
+	@Override
+	public void removeTimeSlot(TimeSlot timeSlot){
+		if (timeSlot == tdt4100Lecture){
+			throw new IllegalArguemntException("Cannot remove the holy TDT4100 lecture. You HAVE to come!")
+		}
+		super.removeTimeSlot(timeSlot);
+	}
+}
+
+c) 
+
+public class delegatingDayPlan extends DayPlan {
+	private DayPlan delegate; 
+
+	public DelegatingDayPlan(DayPlan delegate) {
+		super(); 
+		this.delegate = delegate;
+	}
+
+	@Override 
+	public TimeSlot getTimeSlotAt(int hours, int minutes){
+		TimeSlot o1 = super.getTimeSlotAt(hours,minutes); 
+		TimeSlot o2 = delegate.getTimeSlotAt(hours, minutes); 
+
+		if (o1 != null && o2 != null){
+			return o1.compareTo(o2) < 0 ? o1 : o2;
+		} else if (o1 != null){
+			reutrn o1;
+		} else {
+			return o2;
+		}
+	}
+
+	@Override 
+	protected Collection<TimeSlot> getAllTimeSlots(){
+		Collection<TimeSlot> timeSlots = super.getAllTimeSlots();
+		if (delegate != null){
+			List<TimeSlot> timeSLotList = new ArrayList<TimeSlot>(timeSLots); 
+			timeSlotList.addAll(delegate.getAllTimeSlots());
+			Collections.sort(timeSlotList);
+			timeSlots = timeSlotList;
+		}
+		return timeSlots;
+	}
+
+}
+
+Delegering er en teknikk hvor et objekt videreformidler et kall til en "delegat" når de ter behov for delegatens ferdigheter. 
+
+
+
+----Oppgave 4-----
+a) 
+
+InputStream/OutputStream vs Reader/Writer. 
+InputStream/OutputStream håndterer byte-verdier. 
+Reader/Writer håndterer char-verdier. 
+Hvordan i helvete skal jeg vite det. 
+
+b) 
+
+IOException. 
+Man må alltid ha med en throws IOException eller try/catch. IOException er en såkalt "checked exception", brukes gjerne for feil som er utenfor vår kontroll. 
+
+c) 
+
+Man må lukke input- og output-strømmer med close() fordi strømmer bruker gjerne ressurser utenfor Java. Close sikrer riktig samhandling med disse. Sikrer at det alltid skjer ved å ha close i en try/finally-blokk, der finally kjøerer uansett faen. 
+
+
+
+
+
+
+
+
+
+
+
+

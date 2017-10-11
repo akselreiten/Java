@@ -1,0 +1,295 @@
+
+Eksamen 2011
+
+---- Del 1 - Innkapsling ----
+
+a) 
+
+
+En endringsmetode kan se slik ut: 
+private int x; 
+
+public void setValue(int x){
+	if(x > 0){
+		this.x = x;
+	} else {
+		throw IllegalArgumentException("Input should be greater than 0")
+	}
+}
+
+Det skal være enkelt for den som skal endre på parameteren i klassen å skjønne hva som endres og med hva. 
+Viktig at inputet valideres slik at det ikke kan settes inn falske/ulovlige verdier for x. 
+
+b) 
+
+public class Person {
+	
+	private char gender; 
+	private Date birthday; 
+	private String personnr; 
+
+	public Person(char gender){
+		gender = Character.toUpperCase(gender);
+		if (gender == 'M' || gender == 'F'){
+			this.gender = gender; 
+		} else {
+			throw new IllegalArgumentException("Gender should be either 'M' or 'F', but was " + gender)
+		}
+	}
+
+	public Date getBirthday(){
+		return birthday; 
+	}
+
+	public char getGender(){
+		return gender;
+	}
+
+	public void setBirthday(Date date) throws Exception{
+		if (personnr != null) {
+			throw new IOException("Cant change birthday when person ID already set")
+		}
+		this.birthday = date;
+	}
+
+c) 	public int getPersonnr(){
+		return personnr;
+	}
+
+	public void setPersonnr(String number){
+
+		if (isValidPersonnr(number)){
+			personnr = number; 
+		} else {
+			throw new IllegalArgumentException("Not valid personnr")
+		}
+
+	}
+
+
+	private boolean isValidPersonnr(String number){
+		
+		//First, check length
+		if (number.length() != 11){
+			return false;
+		}
+
+		//Then, check first 6 digits if they match with birthday. 
+		String sub = number.substring(0,6);
+		String bday = this.getDay() + this.getMonth() + this.getYear();
+		if (!sub.equals(bday)){
+			return false;
+		}
+
+		//Then, check if each digit is a number and positive
+		for (int i = 0; i<number.length(); i++) {
+			if (!Character.isDigit(number.charAt(i) && Character.getNumericValue(number.charAt(i)<0)){
+				return false;
+			}
+		}
+
+		//Then, check the N3-number, or the 9th digit (index 8), and see if it matches with gender
+
+		int a = Character.getNumericValue(number.charAt(9));
+		a = a % 2; //If mod = 0, then it's an even number. 
+		if (gender == 'M' && (a == 0) || 
+			gender == 'F' && (a != 0)){
+			return false;
+		}
+
+		//Then, check the two last digits, K1 and K2. 
+		private List<Integer> F = Arrays.asList(3,7,6,1,8,9,4,5,2)
+		private List<Integer> G = Arrays.asList(5,4,3,2,7,6,5,4,3,2)
+		private int K1, K2 = 0;
+
+		for (int i = 0; i < F.size()){
+			K1 += F.get(i) * number.get(i); 
+			K2 += G.get(i) * number.get(i);
+			if (i == F.size() - 1){
+				K2 += K1 * G.get(i+1);
+			}
+		}
+		String k1 = Integer.toString(K1);
+		String k2 = Integer.toString(K2); 
+
+		if (k1.length() > 1 && k2.length() > 1){
+			return false; 
+		}
+
+		return true;
+
+	}
+
+d) 
+
+Checked exception er en subklasse av exception som ikke samtidig er en subkalsse av runtimeException. En slik exception må deklareres vha. throws og den kallende metoden må enten håndter unntaket med try/catch eller deklarere det med throws. 
+
+Kodet legner oppe. 
+
+}
+
+
+-----Oppgave 2 - Klasser-----
+
+public class Team implements Comparable<Team>{
+	private String name, sport; 
+	private int leaguePoints, matchGoals; 
+
+	public sportsTeam(String name, sport){
+		this.name = name;
+		this.sport = sport;
+	}
+
+	public int getMatchGoals(){
+		return matchGoals;
+	}
+
+	public int getLeaguePoints(){
+		reutrn leaguePoints;
+	}
+
+	public int setMatchGoals(int num){
+		if (num>0){
+			matchGoals = num;
+		}
+	}
+
+	public int addLeaguePoints(int num){
+		if (num>0){
+		leaguePoints += num;
+		}
+	}
+
+	public String getName(){
+		return name;
+	}
+
+	public int compareTo(Team other){
+		diff = other.getLeaguePoints() - this.getLeaguePoints(); 
+		if (diff == 0){
+			other.getGoals - this.getGoals();
+		}
+		return diff; //If diff is positive, other will be sorted higher than this)
+	}
+
+} //CLASS Team
+
+public class MatchResult {
+	
+	public final Team hometeam, awayteam; 
+
+	public MatchResult(Team hometeam, Team awayTeam){
+		this.hometeam = hometeam; 
+		this.awayTeam = awayTeam;
+	}
+
+	public String toString(){
+		return hometeam.getName() + "-" + awayteam.getName() + ": " + hometeam.getMatchGoals() + "-" + awayteam.getMatchGoals; 
+	}
+
+	public int getGoals(Team team){
+		if (isParticipant(team)){
+			return team.getMatchGoals;
+		}
+	}
+
+	public void setGoals(Team team, int goals){
+		if (isParticipant(team)){
+			team.setMatchgoals(goals);
+		}
+	}
+
+	public int getScore(){
+		return getGoals(hometeam) - getGoals(awayteam); 
+	}
+
+	public boolean isParticipant(Team team){
+		return (team == hometeam || team == awayteam)
+	}
+
+	public boolean isDraw(){
+		return (getScore() == 0);
+	}
+
+	public boolean isWinner(Team team){
+		return (team == hometeam && getScore > 0 || team == awayteam && getScore < 0)
+
+	}
+
+} //CLASS MatchResult
+
+public class LeagueTable {
+	
+	private final List<Team> teams;
+	private List<MatchResult> matches = new ArrayList<MatchResult>(); 
+
+	private List<Team> leagueTable = new ArrayList<Team>(); 
+
+	public LeagueTable(List<Team> teams){
+		this.teams = new ArrayList<Team>(teams); 
+		leagueTable.addAll(teams); 
+	}
+
+	public List<MatchResult> getMatches(){
+		return matches;
+	}
+
+	public void addMatch(MatchResult result){
+		if (!teams.contains(result.hometeam) || !teams.contains(result.awayteam)) {
+			throw new IllegalArgumentException("One or both teams don't exist in the league.")
+		}
+
+		matches.add(result);
+
+		if (result.isWinner(hometeam)){
+			hometeam.addLeaguePoints(3); 
+		} else if (result.isWinner(awayteam)){
+			awayteam.addLeguePoints(3); 
+		} else if (result.isDraw()){
+			hometeam.addLeaguePoints(1); 
+			awayteam.addLeaguePoints(1); 
+		}
+		updateLeagueTable();
+	}
+
+	public void updateLeagueTable(){
+		Collections.sort(leagueTable);
+	}
+
+	public List<String> getTeamNames(){
+		List<String> teamNames = new ArrayList<String>(); 
+		for (Team t : teams) {
+			teamNames.add(t.getName()); 
+		}
+		return teamNames; 
+	}
+
+	public int getParticipantPoints(MatchResult result, Team team){
+		if (result.isParticipant(team)){
+			if (result.isWinner(team)){
+				return 3; 
+			} else if (result.isDraw()){
+				return 1; 
+			} 
+			return 0;
+		} else {
+			throw new IllegalArgumentException(team + " did not play this match. Enter valid team.")
+		}
+	}
+} // CLASS LEAGUETABLE
+
+----Oppgave 3-----
+
+a) 
+
+for å lage eksempelvis TennisResult; 
+Vi lager en egen klasse som vi kaller TennisResult. Denne extender MatchResult.
+Når vi arver arver vi alle metodene enten vi vil det eller ikke, og vi må endre på de metodene vi ønsker å bruke som spesifikt skal tilpasses den klassen vi nå er i (tennisResult). 
+
+Ville gjort MatchResult til en abstrakt klasse, som aldri instansieres i seg selv, men som subklasser kan arve fra. Slik kan man lage mer spesifikke resultat-klasser, som SoccerResult eller TennisResult. 
+
+public class TennisResult extends MatchResult{
+	
+	public TennisResult(Team opponent1, Team opponent 2)
+		super(opponent1,opponent2)
+}

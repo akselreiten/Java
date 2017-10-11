@@ -1,0 +1,20 @@
+Diagrammer
+
+Diagramtyper: 
+
+Diagrammer er en overordnet representasjon av hva som skjer i en kode. 
+Hever seg over detaljer. 
+
+Grovt sett beskriver diagrammer to ulike aspekter ved et program: 
+1) Tilstand / Oppførsel ved kjøretid. Dvs. hva som skjer med programmet når det kjøres, f.eks. tilstanden til objektstrukturer. 
+	Her har vi f.eks. Objektdiagrammer, Objekttilstandsdiagrammer og Sekvensdiagrammer
+2)	Design, dvs. hvordan koden er strukturert. Innebæerer f.eks. hvilke klasser som finnes og hvordan de henger sammen. 
+	F.eks. klassediagrammer. 
+
+Objektdiagrammer --> Viser tilstanden til et program ved å ta "snapshots" av objektstrukturer. 
+Objekttilstandsdiagrammer --> Objektdiagrammer over tid, som kobler objektdiagrammer sammen med transisjoner. Viser hvordan obj.strukturer oppfører seg over tid. 
+Klassediagrammer --> Klassediagrammer viser klassestrukturen til et program, med innholdet i klasser (attributter og operasjoner) og hvordan de er koblet sammen med arv og assosiasjoner.
+
+Interaksjonsdiagrammer --> Viser hvordan objekter i en objektstruktur er koblet sammen, hvordan objektene bruker hverandres metoder.
+- Samhandlingsdiagrammer: Utvider objektdiagrammer med visning av metodekall. 
+- Sekvensdiagrammer: Viser metodekall mellom objeketer langs en tidslinje. 

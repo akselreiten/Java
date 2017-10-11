@@ -1,0 +1,43 @@
+Enhetstesting
+
+
+public class Counter {
+   private int end, pos;
+   public Counter(int start, int end) {
+      this.pos = start;
+      this.end = end;
+   }
+   public int getCounter() {
+      return pos;
+   }
+   public boolean count() {
+      if (pos >= end) {
+         return false;
+      }
+      pos = pos + 1;
+      return true;
+   }
+}
+
+
+Skal teste Counter-klassen
+
+- Når Counter counter = new Counter(start,end) har blitt instansiert, skal pos = start. 
+
+
+Testkode
+
+public class CounterTest extends junit.framework.TestCase {
+
+
+Counter counter = new Counter(1,3); 
+assertEquals(1,counter.getCounter()); //sjekker om returverdi == 1
+
+For å komme oss videre, må vi kjøre assertEquals noen ganger; 
+
+assertEquals(true, counter.count());
+assertEquals(2, counter.getCounter());
+assertEquals(false, counter.count());
+assertEquals(3, counter.getCounter());
+
+}

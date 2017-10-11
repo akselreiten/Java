@@ -1,0 +1,110 @@
+IO Input / Output 
+
+String fileAddress = new File("").getAbsolutePath() + "/src/file.txt"; 
+
+public String readStringWords(String fileAddress) throws FileNotFoundException {
+	String outStr = "";
+	InputStream in = new FileReader(fileAddress); 
+	
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Reading input
+
+If you want to read input from user, use the Scanner-class
+
+Scanner in = new Scanner(System.in)
+System.out.print("Please enter a number: "); 
+int number = in.nextInt();
+
+in.close(); 
+
+//double
+int number = in.nextDouble(); 
+
+//text
+int text = in.next();
+
+Scanner in = new Scanner(System.in); 
+System.out.print("Enter some string: ")
+String text = in.next(); 
+
+
+//Testprogram
+List<Double> values = new ArrayList<Double>();
+Scanner in = new Scanner(System.in); 
+while (in.hasNextDouble()){
+	values.add(in.nextDouble());
+}
+
+
+//READING AND WRITING FILES
+
+The most convenient mechanism for reading text is Scanner. 
+To use Scanner to read from files, it relies on another class: File. 
+File inputFile = new File("input.txt"); 
+Scanner scanner = new Scanner(inputFile); //Reads text from the file input.txt. 
+while (scanner.hasNext()){
+	String word = scanner.next(); //New iteration for every blanc space. So every word is one "iteration" of the while. 
+}
+while (scanner.hasNextLine()){
+	String line = scanner.nextLine(); //New iteration for every line. 
+	//Then manipulate the line. 
+	String firstPart = line.substring(0,line.indexOf("-")).trim(); 
+	String secondPart = line.substring(line.indexOf("-")).trim(); //trim() will remove any spaces at the end. 
+}
+
+
+To write TO a file: 
+PrintWriter out = new PrintWriter("output.txt"); Printwriter is an enhancement of PrintStream. Can use 
+
+in.close(); // Remember to close the Scanner.
+out.close(); // Remember to close the PrintWriter. 
+
+
+Class java.util.Scanner
+
+Scanner(File in)
+Scanner(InputStream in)
+Scanner(Reader in) 
+Disse tre lager en scanner som leder fra en gitt fil, en input stream eller en reader. 
+
+close(); //Som i scannerName.close();
+
+boolean hasNext()
+boolean hasNextDouble(); 
+boolean hasNextInt(); 
+boolean hasNextLine(); 
+
+String next()
+double nextDouble()
+int nextInt()
+String nextLine()
+
+
+
+
+//SKRIVING OG LESING FRA FIL
+
+For å skrive til fil, bruk PrintWriter. 
+PrintWriter out = new PrintWriter(new File("sample.txt"));
+ELLER FOR Å SKRIVE TIL KONSOLL
+PrintWriter out = new PrintWriter(System.out)
+
+For å lese fra fil, bruk Scanner. 
+Scanner input = new Scanner(file); 
+ELLER FOR Å LESE FRA KEYBOARD
+Scanner input = new Scanner(System.in); 

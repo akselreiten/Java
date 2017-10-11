@@ -1,0 +1,76 @@
+Kont 2015
+
+Oppgave 1
+a) 
+
+Fordeler er: 
+- Økt lesbarhet. Blir enklere å skjønne hvilken variabel som er hva, da de ikke kan endres på. 
+- Konsistens - du vet at de er like overalt. Kan sees på som konstanter. 
+
+Ulemper: 
+- Udynamisk, kan ikke endre på det som allerede er satt inn. Må i så fall lage en helt ny instans som skal erstatte den eksisterende. 
+
+b) 
+
+throws brukes her for å gi ut en feilmelding når input ikke er det Java forventer. I dette tilfellet er det dersom input ikke er en bokstav fra alfabetet, så send ut en errormelding om at symbolet ikke er alfabetisk. Dette stopper skriptet. 
+
+
+private String symbol;
+public Unit base; 
+private double factor, offset;
+ 
+
+public Unit(String symbol) throws IllegalArgumentException {
+	if (Character.isAlphabetic(symbol.charAt(0))){
+		this.symbol = symbol; 
+	} else {
+		throw new IllegalArgumentException("Symbol is not alphabetic")
+	}
+}
+
+public Unit(String symbol, Unit base, double factor, double offset) throws IllegalArgumentException {
+	if (Character.isAlphabetic(symbol.charAt(0))){
+		this.symbol = symbol;
+		this.base = base; 
+		this.factor = factor; 
+		this.offset = offset; 
+	} else {
+		throw new IllegalArgumentException("Symbol is not alphabetic")
+	}
+}
+
+public Unit(String symbol, Unit base, double factor){
+	if (Character.isAlphabetic(symbol.charAt(0))){
+		this.symbol = symbol; 
+		this.base = base; 
+		this.factor = factor; 
+	} else {
+		throw new IllegalArgumentException("Symbol is not alphabetic")
+	}
+}
+
+c) 
+
+Hensikten med en toString-metode er å kunne representere data som skrives ut fra klassen på en standard måte.
+Dersom du ber om å skrive ut klassenavnet til konsoll f.eks., henviser den videre til toString-metoden som forteller hvordan dette skal eventuelt skal gjøres. 
+
+d) 
+
+
+e) 
+public Unit findCommonBaseUnit(Unit other){
+	Unit unit1 = this; 
+	while (unit1 != null) {
+		Unit unit2 = other; 
+		while (unit2 != nulll) {
+			if (unit2 == unit1){
+				return unit1
+			}
+			unit2 = unit2.base; 
+		}
+		unit1 = unit1.base
+	}
+	return null; 
+}
+
+

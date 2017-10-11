@@ -1,0 +1,38 @@
+Interfaces
+
+Interfaces are similar to classes but some important differences: 
+- An interface type does not have instance variables
+- All methods in an interface type are abstract. Have a name, parameters and return type, biut they don't have an implementation. 
+- All methods are automatically public. No need to declare "public".
+- An interface has no constructor. 
+
+public interface InterfaceName {
+	... method names ...
+	e.g.: double getValue(); 
+}
+
+You can NOT construct an object of an interface type. 
+InterfaceName name = new InterfaceName(); //ERROR
+
+You can construct an object of a class that implements interface tuype. 
+InterfaceName name = new ObjectName(); 
+
+Interface Comparable has method compareTo(object other)
+a.compareTo(b). 
+If int < 0 : a comes before b
+If int > 0 : b comes before a
+if int == 0 : a == b; 
+
+EKSEMPEL: 
+public class BankAccount implements Comparable<BankAccount>{
+	public int compareTo(BankAccount other){
+		int diff = balance - other.balance; 
+		if (diff < 0) {
+			return -1; 
+		} else if (diff > 0) {
+			return 1; 
+		} 
+		return 0; 
+		//if positive, other is sorted before this. if negative, this is sorted before other.
+	}
+} 

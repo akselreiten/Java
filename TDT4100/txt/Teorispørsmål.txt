@@ -1,0 +1,57 @@
+Teorispørsmål
+
+
+----------Observatør-observert-teknikken----------
+
+1. På hvilken måte kan observatør-observert-teknikken hjelpe til å holde tilstanden i et program konsistent?
+Observatør-observert-teknikken handler om at du har en klasse B som "følger med på" klasse A. A har en oversikt over sine følgere (gjerne gjennom en liste). Når en endring skjer i klasse A som B følger med på, skal altså alle følgerne til A få melding om dette. B har da en metode som håndterer endringen. Slik kan man sikre konsistens. 
+
+2. Nevn (minst) tre metoder som burde være med i de aller fleste implementasjoner av observatør-observert-teknikken.
+void addListener(); 
+void removeListener(); //add and remove listeners from observert-klassen. 
+void fireHasChanges(); 
+void hasChanged(); //I interfacet til lytteren.
+
+3. Hvorfor kan det være lurt å benytte grensesnitt for den observerte parten i et observatør-observert-forhold?
+Det kan være lurt å benytte grensesnitt for den observerte for å sikre at den observerte har de nødvendige metodene. Dette er hhv. addListener og removeListener som jeg kommer på i første omgang. 
+
+4. Hvorfor kan det være lurt å benytte grensesnitt for observatør-parten i et observatør-observert-forhold?
+Ved å benytte grensesnitt er man sikret at alle lyttere (observatører) som skal følge med på den observerte har nødvendige metoder. I grensesnittet har man eksempelvis en hasChanged()-metode som håndterer endringen i A på vegne av B. 
+Flere typer klasser kan dermed være lyttere av en klasse, så lenge de implementerer grensesnittet! Og det er en stor fordel!
+
+5. Tenk at en nettside oppdateres jevnlig, og du ønsker å få et varsel til mobilen din hver gang nettsiden oppdateres. Hvilken av partene er den observerte og og hvilken er observatør?
+Nettsiden er den observerte. Jeg (min telefon) er observatøren.
+
+
+6. Hvorfor lønner det seg å bruke observatør-observert-teknikken fremfor å jevnlig sjekke om et objekt har endret tilstand?
+Man er alltid sikret konsistens. Når en verdi endres i en klasse, er den oppdatert i lytter-objektet. Sømløst. 
+
+
+----------Delegering----------
+
+1. Forklar forholdet mellom en delegat og en delegerende.
+En delegat er en som har fått en "oppgave" av en delegerende. 
+Si at du har et sjef/ansatt-forhold. Sjefen vil være den delegerende som bare viderefører oppgaver til den ansatte. De ansatte er de som faktisk utfører oppgavene, og som bare rapporterer tilbake til sjefen. 
+Den delegerende benytter seg altså av andre klasser (hjelpeklasser) og deres metoder for å utføre en oppgave. 
+
+2. I et firma med en Manager og flere Coworkers, hvem er naturlig de(n) delegerende og hvem er delegat(er)? 
+Manager -> Delegerende
+Coworkers -> Delegater
+
+3. Forklar hvordan det kan være nyttig å benytte grensesnitt i forbindelse med delegering.
+Dersom du implementerer et interface tvinges du til å ta i bruk de metodene som finnes i interfacet. På den måten sikres den som implementerer interfacet å ta i bruk de riktige metodene. På den måten vet den delegerende alltid hvilke metoder som finnes og ikke finnes i et delegat. 
+
+4. Ved å benytte grensesnitt for en delegat-klasse, hvilke fordeler får man? <----- ???
+Fordeler du får av å benytte grensesnitt for en delegat-klasse, eksempelvis for "Coworker"-klassen.
+Sikrer konsistens mellom delegat-klassene. 
+
+5. Når kan det være smart å benytte delegeringsteknikken fremfor arv?
+Med arv så tvinges man til å arve absolutt alle metoder fra klassen man arver fra. Man kan selvsagt overskrive de metodene man ønsker. Det er ikke alltid dette er fordelaktig. Av og til er det eneste som er interessant for en klasse enkelte verdier/objekter fra en annen klasse, og da er det samrt å bentyte delegeringsteknikken fremfro arv. 
+
+
+----------Polymorphism-----------
+
+Polymorphism: 
+
+---------Diagrammer----------
+

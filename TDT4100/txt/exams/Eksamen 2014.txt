@@ -1,0 +1,451 @@
+Eksamen 2014
+
+---- Oppgave 1 -----
+
+a) 
+
+Tegn objekttilstandsdiagram for MysticalObject-objekt
+
+MysticalObject m = new MysticalObject(3); 
+
+	number = 3
+
+	//step
+	number = -number + int(Math.signum(number)); WTF
+
+
+Objekttilstandsdiagrammer viser hvordan objekter endres over tid, når en kaller på metoder. Ser på hvordan ulike metodekall endrer tilstanden til objektstrukturer og dermed hvordan objektene endrer seg over tid. 
+--> Kombinasjon mellom objektdiagrammer og tilstandsdiagrammer.
+
+Tegnet diagram i tekstbook
+
+b) 
+
+Fordelen er at du får sett hvordan objektet "reagerer" ved å kalle på metodene. Du får sett hvordan det endrer seg over tid. 
+
+Ulempe kan være at du kun får sett et tilfelle, som ikke nødvendigvis er representativt for hele "utfallsrommet". 
+Det er ofte store systemer, hvis de skal dekke over alle relevante tilfeller, alle iterasjoner. Kun enkle tilfeller kan beskrives komplett. 
+
+c) 
+
+Fordelen er at du alltid vet hvilken klasse/type varibelen hører til. Du vet hvilken klasse både høyre og venstre side av ligningen må være for at det skal være en lovlig operasjon, som gir forutsigbarhet, du vet hva du får! Slik hindrer man feil bruk av verdier. Samtidig blir det lettere å kompilere til effektiv kode?!
+
+d) 
+
+(int) x gjør (dersom mulig) til typen av int. Tvinger uttrykket til å bli en viss type. Når det brukes på tall: Java vil konvertere fra f.eks. String til int. 
+Med klasser og grensesnitt, så vil det sjekkes at det indre uttrykket har den angitte typen, ellers så utlyses det unntak av typen ClassCastException. 
+
+----Oppgave 2-----
+
+a) 
+
+public class Question {
+	
+	private String question, answer; 
+	private List<String> options;
+
+	public Question(String question, String answer, String... alternatives){
+		this.options = Arrays.asList(alternatives);
+		this.question = question; 
+		this.answer = answer;
+
+	}
+
+	public Question(String question, String answer, List<String> alternatives){
+		this.options = alternatives; 
+		this.question = question; 
+		this.answer = answer;
+	}
+
+	//Kunne alternativt laget to konstruktører, en med alternativer og en uten.
+
+	public String getQuestion(){
+		return question; 
+	}
+
+	public String getAnswer(){
+		return answer; 
+	}
+
+	private List<String> getOptions(){
+		return options; 
+	}
+
+	public String askQuestion(PrintStream out){
+		out.print(question);
+		if (options != null) {
+			out.println("Alternativer: ");
+			int num = 1; 
+			for (String option : options){
+				out.println(num + ". " + option); 
+				num++; 
+			}
+		}
+	}
+
+	public boolean checkAnswer(String ans){
+		if (options != null && ans > 0 && ans <= options.size()) {
+			int index = Integer.valueOf(ans);
+			ans = options.get(int - 1);
+		}
+		if (this.answer.equals(ans)){
+			return true;
+		}
+		return false; 
+	}
+
+}
+
+c) 
+
+I Question-klassen er det begrenset hva som trengs av get- og settermetoder. Men endringsmetoder kan være nice. Og kanskje mulighet til å legge til og fjerne alternativer. Trengs ikke set-metoder når felt initialiseres med 
+
+askQuestion()-metoden skriver egentlig ut alt du trenger. 
+
+d) 
+
+public class Quiz {
+	
+	List<Question> questions = new ArrayList<Question>(); 
+
+	public Quiz(){
+		init();
+	}
+
+	public void init() {
+		addQuestion(new Question("Hvilken karakter får jeg på denne eksamen?", "Hvis sensor er kul: A", Arrays.asList("Hvis sensor er kul: A", "B", "C", "D"); 
+
+		addQuestion(new Question("Hva stor U i NTNU for?", "Universitet")
+	}
+
+	public void addQuestion(Question question){
+		if (!questions.contains(question)){
+			questions.add(question);
+		}
+	}
+
+	public void runQuiz(){
+		Scanner input = new Scanner(System.in); 
+		for (Question q : questions) {
+			q.askQuestion(System.out); 
+
+			while (input.hasNextLine()) {
+				String answer = input.nextLine();
+				if (question.checkAnswer(answer)){
+					break;
+				} 
+				System.out.println("Feil, prøv på nytt!")
+				q.askQuestion(System.out); 
+			}
+
+		}
+		scanner.close(); 
+	}
+
+	public readQuiz(Reader input) throws IOException {
+		BufferedReader reader = new BufferedReader(input); 
+		while (reader.ready()) {
+			String question = reader.readLine(); 
+			if (question == null || question.trim().length() == 0) {
+				break; 
+			}
+			String answer = reader.readLine(); 
+			List<String> options = new ArrayList<String>();
+			while(reader.ready()){
+				String line = reader.readLine(); 
+				if (line == null || line.trim().length() == 0) {
+					break; 
+				}
+				options.add(line);
+			}
+			addQuestion(new Question(question, answer, options)))
+		}
+	}
+
+	String address = new File("").getAbsolutePath() + "sample.txt";
+	Scanner reader = new Scanner(new FileReader(address)); 
+
+	while (reader.hasNext()){
+		if 
+	}
+
+	public static void main(String[] args){
+
+		Question q1 = new Question("Hvilken karakter får jeg på denne eksamen?", "Hvis sensor er kul: A", Arrays.asList("Hvis sensor er kul: A", "B", "C", "D"); 
+
+		Question q2 = new Question("Hva stor U i NTNU for?", "Universitet",Arrays.asList())
+
+		Quiz newgame = new Quiz(); 
+		newgame
+	}
+
+}
+
+----Oppgave 3----
+
+public 
+
+----Oppgave 4----
+
+a) 
+
+public abstract class Question {
+	private String question;
+
+	protected Question(String question){
+		this.question = question;
+	}
+
+	public void askQuestion(PrintStream out) {
+		out.println(question);
+	} 
+
+	protected abstract boolean checkAnswer(String answer); 
+
+}
+
+public class StringQuestion extends Question{
+
+	private String answer;
+
+	public StringQuestion(String question, String answer){
+		super(question);
+		this.answer = answer;
+	}
+
+	@Override
+	public boolean checkAnswer(String answer){
+		return this.answer.equals(answer)
+	}
+
+}
+
+public class StringOptionsQuestion extends Question{
+
+	private String answer;
+	private List<String> options; 
+
+	public StringOptionsQuestion(String question, String answer, List<String> options){
+		super(question); 
+		this.options = new ArrayList<String>(options); 
+	}
+
+	@Override
+	public void askQuestion(PrintStream out){
+		super.askQuestion(out); 
+
+		int num = 1;
+		out.println("Alternativer: "); 
+		for (String option : options) {
+			out.println(num + ". " + option);
+			num++;
+		}
+	}
+
+	@Override
+	public boolean checkAnswer(String answer) {
+		
+		if (ans > 0 && ans <= options.size()) {
+			int index = Integer.valueOf(ans);
+			ans = options.get(int - 1);
+		}
+		if (this.answer.equals(ans)){
+			return true;
+		}
+		return false; 
+	}
+}
+
+@Override
+public class BooleanQuestion extends Question{
+	
+	private boolean answer;
+
+	public booleanQuestion(String Question, boolean answer){
+		super(question);
+		this.answer = answer; 
+
+	}
+
+	@Override
+	public boolean checkAnswer(boolean ans){
+		return this.answer == ans; 
+	}
+
+}
+
+c)
+
+public void init(Reader input) throws IOException{
+	BufferedReader reader = new BufferredReader(input); 
+
+	while (reader.ready()){
+		String question = reader.readLine();
+		if (question == null || question.trim().length() == 0){
+			break; 
+		}
+		
+		String answer = reader.readLine(); 
+
+		List<String> options = new ArrayList<String>(); 
+		while (reader.ready()){
+			String line = reader.readLine();
+			if (line == null || line.trim().length() == 0){
+				break; 
+			}
+			options.add(line);
+		}
+
+		if (answer.equals("ja") && options.size() == 0) {
+			addQuestion(new BooleanQuestion(question, true))
+		} else if (answer.equals("nei" && options.size() == 0)) {
+			addQuestion(new BooleanQuestion(question, false))
+		} else if (options.size() > 0) {
+			addQuestion(New StringOptionQuestion(question, answer, options))
+		} else {
+			addQuestion(new StringQuestion(question,answer))
+		}
+
+	}
+}
+
+
+}
+
+
+
+
+
+
+
+
+c) 
+
+public void init(Reader input){
+	BufferedReader reader = new BufferedReader(input);
+
+	while (reader.ready()){
+		String question = readLine(); 
+		if (question == null || question.trim().length() == 0){
+			break; 
+		}
+
+		String answer = readline(); 
+
+		List<String> options = new ArrayList<String>();
+		
+		while (reader.ready()){
+			String line = readLine; 
+			if (line == null || line.trim().length() == 0){
+				break;
+			}
+			options.add(line);
+		}	
+
+		if (answer.equals("ja") && options == null) {
+			.....
+		}
+	}
+}
+
+
+
+-----Oppgave 5-----
+
+private boolean mode; 
+private PrintStream out; 
+private Scanner scanner; 
+private int correctCount; 
+private List<Question> remaining; 
+
+public void start(boolean mode, PrintStream out, InputStream in){
+	this.out = out; 
+	this.scanner = new Scanner(in);
+	correctCount=0; 
+	remaining = new ArrayList<Question>(questions);
+}
+
+public void doQuestion(){
+	Question question = remaining.remove(0)
+	question.askQuestion(out);
+	String answer = scanner.nextLine(); 
+
+	if (question.checkAnswer(answer)){
+		System.out.println("Riktig");
+		correctCount++; 
+	} else {
+		System.out.println("Feil");
+		remaining.add(mode ? remaining.size() : 0, question)
+	}
+	return (remaining != null ? remaining.size() : -1);
+	
+
+	for (Question nextQ : questions) {
+		nextQ.askQuestion(out);
+
+
+	}
+
+}
+
+public int stop(){
+	scanner.close()
+	return correctCount; 
+}
+
+-----OPPGAVE 6------
+
+private QuizFormat quizFormat = new StandardQuizFormat(); 
+
+public void setQuizFormat(quizFormat quizFormat) {
+	this.quizFormat = quizFormat; 
+}
+
+public void init(Reader input) throws IOException {
+	questions.addAll(quizFormat.read(input))
+	}
+}
+
+
+b) 
+
+
+En exception som ikke er en runtimeException er en checked exception. En slik metode krever enten try/catch eller en throws-deklarasjon for å unngå feil.
+
+c) 
+
+Kapsle inn m2 i en try/catch. 
+
+try {
+	...
+} catch (Exception e){
+	throw new RuntimeException(e)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

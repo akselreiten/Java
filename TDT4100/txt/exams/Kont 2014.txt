@@ -1,0 +1,286 @@
+Kont 2014
+
+Oppgave 1
+
+a) 
+
+Det kalles validering. Sjekker at input er lovlig/gyldig ihht. krav. 
+
+public void deposit (int amount){
+	if(amount < 0){
+		throw new IllegalArgumentException("Can't deposit negative amount"); 
+	}
+	balance += amount; 
+}
+
+public void withdraw (int amount){
+	if(amount < 0){
+		throw new IllegalArgumentException("Can't withdraw negative amount"); 
+	}
+	balance -= amount; 
+}
+
+c) 
+
+En annen teknikk er å initialisere objektet gjennom en konstruktør. 
+Fordeler med denne teknikken er at du får satt de startverdiene du ønsker (som du har satt til å kunne endre i konstruktøren), du får mulighet til å validere disse verdiene (ved å lage valideringen i konstruktøren), og slik hindrer du at feil verdier/typer deklareres. 
+
+Konstruktører er metoder med samme navn som klassen, og er en metode som kjøres én og kun én gang. 
+- Kan skrive mer avansert kode for initialisering, valg av startverdier og validering. 
+- En tvinges til å oppgi argumenter som skal brukes i initialiseringen, slika t du alltid må "starte pås amme sted" for en gitt klasse
+- Sikrer tilstand ved bruk av innkapsling. 
+
+Ulemper er : 
+- Lett å glemme å initialisere felt??!
+
+d) 
+
+final brukes for å gjøre attributter umulig å endre på etter at det er initialisert. Den har gis en verdi, og den verdien skal den ha. Fordelaktig å bruke dersom attributtene kun skal kunne bestemmes fra én metode (f.eks. konstruktøren) eller lignenede. 
+
+Her mangles det en konstruktør som gir attributtene verdier! 
+
+Konstruktøren kan se slik ut: 
+public Transaction(Account source, Account target, int amount){
+	this.source = source; 
+	this.target = target; 
+	this.amount = amount;
+}
+
+Støttes innkapsling her? 
+Innkapsling handler om at man skal hindre at en kan sette objekter til en ulovlig tilstand, samtidig som at man skal skjule representasjonsdetaljer slik at en kan gjøre endringer uten at andre klasser også må endres. 
+
+Her er alle attributtene final, så de kan ikke endres på. 
+Dataene er markert med "public", så de er ikke skjulte for offentligheten. 
+
+
+-------------------Oppgave 2-------------------------
+
+public class Account {
+
+	private String accountId;
+	private int balance, withdrawLimit, transLimit; 
+
+	public Account(String accountId, int initialBalance){
+		if (isValidAccountId){
+			this.accountId = accountId; 
+		} else {
+			throw new IllegalArgumentException("Not a valid accountId. AccountId.length() == 6")
+		}
+		this.balance = initialBalance;
+	}
+
+	private boolean isValidAccountId(String accountId){
+		if (accountId.length() != 6) {
+			return false;
+		}
+
+		for (int i=0; i < accountId.length(); i++){
+				Char a = accountId.charAt(i); 
+				if (!Character.isDigit(a)) {
+					return false;
+				}
+		}
+		return true;
+	}
+
+	public int getBalance() {
+        return balance;
+    }
+
+    public void deposit (int amount){
+	if(amount < 0){
+		throw new IllegalArgumentException("Can't deposit negative amount"); 
+	}
+	balance += amount; 
+	}
+
+	public void withdraw (int amount){
+	if(amount < 0){
+		throw new IllegalArgumentException("Can't withdraw negative amount"); 
+	}
+
+	if(amount > withdrawLimit){
+		throw new IllegalArgumentException("Amount > withdrawLimit. Withdraw limit is " + withdrawLimit);
+	}
+
+	balance -= amount; 
+
+	public String getAccountId(){
+		return accountId; 
+	}
+
+	public int getTransLimit(){
+		return transLimit; 
+	}
+
+}
+
+public class Bank {
+	private List<Account> accounts = new ArrayList<Account>();
+	private List<Transaction> transactions = new ArrayList<Transaction>();
+	private int nextAccountId = 100000;
+
+	public Bank(){
+
+	}
+
+	public void addAccount(Account account){
+		for (Account a : accounts){
+			if (a.getAccountId() == account.getAccountId()) {
+				return; 
+			}
+		}
+
+		accounts.add(account);
+	}
+
+	private String createUniqueAccountId(){
+		boolean a = true; 
+		while (a == true){
+			for (Account acc : accounts){
+				if (acc.getAccountId() == nextAccountId){
+					nextAccountId += 1; 
+					a = true;
+					break; 
+				}
+				a = false;
+			}
+		}
+		
+		return Integer.toString(nextAccountId); 
+	}
+
+	public Account getAccount(String accountId){
+		for (Account a: accounts){
+			if (accountId == a.getAccountId()) {
+				return a;
+			}
+		}
+		return null;
+	}
+
+	public Account createAccount(){
+		Account newAccount = new Account(createUniqueAccountId(), 0)
+		return newAccount;
+	}
+
+	public void removeAccount(Account account){
+		if (accounts.contains(account)){
+			accounts.remove(accounts.indexOf(account)); 
+		}
+	}
+
+	public void transfer(Account source, Account target, int amount){
+		if (!accounts.contains(source) || !accounts.contains(target)){
+			throw new IllegalArgumentException("Source- and/or target account not part this bank.")
+		}
+		
+		source.withdraw(amount); 
+		
+		try {
+			target.deposit(amount);
+		} catch (Exception e) {
+			source.deposit(amount);
+			throw e; 
+		}
+		
+		Transaction newTrans = new Tansaction(source,target,amount);
+		transactions.add(newTrans);
+	}
+
+	public int getTransferSum(Account account, int year, int month){
+		int sum = 0;
+		for (Transaction tr : transactions){
+			if (account == tr.source && tr.date.getYear()==year && tr.date.getMonth()==month){
+				sum += tr.amount; 
+			}
+		}
+		return sum;
+	}
+
+	public void doTransactions(InputStream input) throws IOException{
+			Scanner scanner = new Scanner(input);
+			while(scanner.hasNextLine()){
+				String line = scanner.nextLine();
+				String[] split1 = line1.split("-");
+				String[] split2 = split1[1].split(":");
+
+				//Eventuelt
+				/*
+				int dashpos = line.indexOf("-"); int colpos = line.indexOf(":");
+				Account source = getAccount(line.substring(0,dashpos)); 
+				Account target = getAccount(line.substring(dashpos+1,colpos));
+				int amount = Integer.getInteger(line.substring(colpos+1);
+
+				*/
+
+
+				try {
+					Account source = getAccount(split1[0]); 
+					Account target = getAccount(split1[1]);
+					int amount = Integer.getInteger(split2[1]);
+					
+					if (source == null || target == null){
+						continue; 
+					}
+					
+					transfer(source,target,amount);
+				} catch (Exception e){	
+				}
+			}
+	}
+
+	public class SafeBank extends Bank{
+
+		public SafeBank() {
+		}
+
+		public void setMonthlyTransferLimit(Account account, int transferLimit){
+
+		}
+
+		@Override
+		public void transfer(Account source, Account target, int amount){
+			if (!accounts.contains(source) || !accounts.contains(target)){
+				throw new IllegalArgumentException("Source- and/or target account not part this bank.")
+			}
+			
+			if (getTransferSum(source,year,month) + amount > source.getTransLimit()){
+				throw new IllegalArgumentException("Transaction limit exceeded.")
+			}
+
+			source.withdraw(amount); 
+			
+			try {
+				target.deposit(amount);
+			} catch (Exception e) {
+				source.deposit(amount);
+				throw e; 
+			}
+			
+			Transaction newTrans = new Tansaction(source,target,amount);
+			transactions.add(newTrans);
+	}
+
+	}
+
+
+Oppgave 5 - testing
+
+public void testAccount() {
+	assertEquals(0,account.getBalance()); 
+	account.deposit(100);
+	assertEquals(100,account.getBalance());
+	assertEquals(100,account.getBalance());
+	account.withdraw(150);
+	assertEquals(-50,account.getBalance());
+
+	try {
+		account.withdraw(50);
+		fail(); 
+	} catch(Exception e){
+
+	}
+	assertEquals(-50,account.getBalance());
+}
+

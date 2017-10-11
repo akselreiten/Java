@@ -1,0 +1,28 @@
+Iterator / Iterable
+
+public class UrlLibrary implements Iterable<String>{
+	
+	private List<String> urlList = new ArrayList<String>();
+
+	public UrlLibrary(){
+
+	}
+	
+	public Iterator<String> iterator(){
+
+	}
+
+}
+
+public class App{
+	
+
+	public static main (String[] args){
+		UrlLibrary url = new UrlLibrary;
+		url.iterator(); 
+	}
+
+
+}
+
+//By implementing Iterable, other classes can iterator through the class with the for each-method. for(Class name:listName)

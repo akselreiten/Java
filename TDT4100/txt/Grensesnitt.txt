@@ -1,0 +1,43 @@
+Grensesnitt
+
+Fordeler: 
+- Innkapsling. Sikkerhet, privacy. Får kun innsikt i selve metodene, men ikke innholdet. 
+Grensesnittet består av det som er åpent tilgjengelig (public). 
+Ved beskrivelse av oppførselen til et objekt trekker man kun frem disse, ikke de som er private, interne i objektet. 
+
+1. Hvilket nøkkelord i Java brukes for å angi at en klasse implementerer et grensesnitt?
+	implements
+
+2. Hva er forskjellen på en klasse og et grensesnitt?
+	En klasse er noe som kan instansieres og lage et objekt. 
+	Et grensesnitt er noe som en klasse kan implementere. Da sikrer man at klassen får alle metodene som ligger i grensesnittet (man tvinges til å implementere dem). 
+	Grensesnittene til en klasse er alle offentlige metoder i en klasse. 
+
+	benytter grensesnitt når det er mange varianter av samme logiske funksjon/tejenste. Mange typer elektrikere, men alle kan de samme metodene. 
+	I et grensesnitt defineres det hvilke metoder som er relevante og som må implementeres dersom grensesnittet tas i bruk.
+	I grensesnittet er det kun metoder som ikke har en implementasjon. Har ingen {}. 
+
+3. Nevn tre bruksområder hvor det er en fordel å bruke grensesnitt.
+4. Kan grensesnitt definere private metoder? 
+5. Hvorfor gir/gir ikke dette mening?
+6. Kan et grensesnitt implementere et annet grensesnitt?
+7. Kan et grensesnitt arve et annet grensesnitt?
+8. Hva er forskjellen på å implementere et grensesnitt og å arve fra en annen klasse?
+9. Hva er forskjellen på en abstrakt klasse og et grensesnitt?
+10. Hvilke muligheter har man i en abstrakt klasse som man ikke har i et grensesnitt?
+11. Definer (skriv ned) et grensesnitt etter hukommelsen. 
+12. Kan et grensesnitt inneholde variabler?
+13. Hva må eventuelt en variabel deklareres som for å være tillatt i et grensesnitt?
+14. Kan et grensesnitt definere konstruktører?
+
+
+Iterable: 
+
+Dersom du implementerer iterable, kan du bruke forEach-loop.
+Husk at Iterable er generisk, så må definere <Type>; 
+Implement methods: 
+public Iterator<Integer> iterator() {
+	
+}
+
+Iterator: 

@@ -1,0 +1,355 @@
+Kont 2016
+
+Oppgave 1
+
+a) Hva betyr de ulike diagramdelene, altså boksene, strekene/pilene og tegnene (ord, tall og *)?
+
+Dette er et klassediagram. 
+Person, Course og Exam er tre klasser. Disse er markert ved at de er understreket, og er "headline" for boksene. 
+Strekene sier noe om relasjoner mellom boksene: 
+	Person har en relasjon til Course: courses. * betyr at en person kan ha mange courses. 
+	Person har en relasjon til Exam: exams. * betyr at en person kan ha mange exams. 
+	Exam har en relasjon fra Person: exams, og en relasjon til Course gjennom course. 1 betyr at en eksamen kan kun ha ett Course-objekt. 
+
+Attributter under klassene. Person har String name, Course har String code, double credits og String time. Exam har char grade.
+
+b) Hvilke valg må en typisk ta når en skal skrive Java-kode for klassene basert slike diagrammer?
+
+Man må ta valget om synlighet for variablene/attributtene sine. Hvordan skal dataene kapsles inn? Skal de være merket private, public eller protected? Hvilke getters og setters må defineres. 
+Hvordan skal de ulike klassene være koblet til hverandre? Har jo en relasjon mellom Person, Exam og Course, men hvordan i praksis? Lage en List<Class> er kanskje det mest nærliggende, og add/remove-metoder. 
+
+c) 
+
+Bruker char-verdi for å representere eksamenskarakterer. Er i utgangspuntket ikke noe problem ved det. Må bare sikre at inputet er gyldig, altså at char-verdien er en gyldig character (mellom A og F). 
+Kan lage en liste: 
+private List<Character> validGrades = Arrays.asList('A','B','C','D','E',F); 
+private char grade; 
+
+public void setGrade(char grade){
+	grade = grade.toUpperCase(); 
+	if (validGrades.contains(grade)){
+		this.grade = grade; 
+	} else {
+		throw new IllegalArgumentException("Not valid grade")
+	}
+}
+
+public class Course {
+	
+	private String code, semester;
+	private double credits;
+	private int year;
+
+	public Course(String code){
+		this.code = code;
+	}
+
+	public int getYear(){
+		return year;
+	}
+
+	public char getSemester(){
+		return semester;
+	}
+
+	public String getTime(){
+		return String.valueOf(semester) + year; 
+	}
+
+	public void setTime(String newTime){
+		if (isValidTimeFormat(newTime)){
+			this.semester = Character.toUpperCase(newTime.charAt(0));
+			this.year = Integer.valueOf(newTime.substring(1)); 
+		} else {
+			throw new IllegalArgumentException("Time input was " + newTime + ", but format not valid");
+		}
+	}
+
+	public boolean isValidTimeFormat(String in){
+		if (in.length() == 3 || in.length() == 5){
+			if (Character.toUpperCase(in.charAt(0)) == 'S' || Character.toUpperCase(in.charAt(0)) == 'F'){
+				String sub = in.substring(1); 
+				try {
+					int year = Integer.valueOf(sub);
+					return true; 
+				} catch (NumberFormatException e){
+				}
+			}
+		}
+
+		return false; 
+
+	}
+
+}
+
+b) 
+Course-objekter skal kunne sorteres etter når de undervises.
+
+Kan enten bruke Comparator-grensesnittet eller Comparable. 
+Definerer Comparables compareTo-metode, og bruker deretter Collections.sort() for å sortere. 
+
+public class Course implements Comparable<Course>{
+	....
+
+	public int compareTo(Course other){
+		
+		if (this.year != other.year()){
+			return this.year - other.year;
+		} 
+
+		return other.semester - this.semester; 
+
+	}
+}
+
+Dersom man nå har en liste med Course-objekter, kan de sorteres med Collections.sort(listName); 
+Natural ordering er definert. 
+
+Kunne også brukt Comparator<Course>. 
+
+public CourseTimeComparator implements Comparator<Course>{
+	
+	public int compare(Course c1, Course c2){
+		
+
+		if (c1.getYear() != c2.getYear()){
+			return c1.getYear().compareTo(c2.getYear())
+		}
+
+		return -c1.getSemester().compareTo(c2.getSemester()); 
+	}
+
+}
+
+c) 
+
+public class Exam {
+	
+	private Course course;
+	private char grade; 
+	private List<Character> validGrades = Arrays.asList('A','B','C','D','E','F'); 
+
+	public Exam(Course course, char grade){
+		this.course = course; 
+		grade = Character.toUpperCase(grade);
+		if (validGrades.contains(grade){
+			this.grade = grade;
+		} else {
+			throw IllegalArgumentException();
+		}
+	}
+
+	public boolean isPass(){
+		return grade != 'F';
+	}
+
+}
+
+d) 
+
+Kan her lage en Comparator-klasse.
+
+public class gradeComparator implements Comparator<Exam>{
+	
+	public int compare(Exam e1, Exam e2){
+		return e1.getGrade() - e2.getGrade();
+	}
+
+}
+
+Kan så bruke Collections.sort(listName, new gradeComperator()); for å sortere på denne måten. 
+
+public class Exam implements Comparable<Exam>{
+	....
+	public int compareTo(Exam other){
+		return this.course.compareTo(other.course); //har allerede en compareTo i course. 
+	}
+}
+
+Dette definerer standardmeotden for sort. 
+
+
+
+--------Oppgave 2--------
+
+a) 
+
+public class Person {
+	
+	private final String name; 
+	private List<Course> courses = new ArrayList<Course>(); 
+	private List<Exam> exams = new ArrayList<Exam>();
+
+	//Velger å lage en List<Course> for å reprsentere fagene til personen. Kunne brukt Collection<Course>, men i dette tilfellet går det stort sett for det samme. Fordel med List er at du har indeksert listen din, som vil si at du kan hente ut akkurat de fagene du vil. Kanskje jeg får bruk for det, kanskje ikke, men er greit å ha. 
+
+	public Person(String name){
+		this.name = name;
+	}
+
+	public boolean addCourse(Course course){
+		for (Course c : courses){
+			if (course.getYear() == c.getYear() 
+				&& course.getSemester() == c.getSemester() 
+				&& course.getCode() == c.getCode()){
+				return false;
+			}
+		courses.add(course);
+		return true;
+	}
+
+	public boolean hasCourse(Course course){
+		for (Course c : courses){
+			if (c.getCode().equals(course.getCode())){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Exam addExam (Course course, char grade){
+		Exam newExam = null;
+		if (hasCourse()){
+			for (Exam e : exams){
+				if (e.getCourse() == course && e.isPass()){
+					break; 
+				} else {
+					newExam = new Exam(course,grade);
+					exams.add(newExam);
+				}
+			}
+		}
+		return newExam;
+	}
+
+	public Exam getLastExam(String code){
+		Exam lastExam = null;
+		for (Exam e : exams){
+			if (e.getCourse().getCode().equals(code)){
+				lastExam = e; 
+			}
+		}
+		return lastExam;
+	}
+
+	public boolean hasPassed(String code){
+		for (Exam e : exams){
+			if (e.getCourse().getCode().equals(code) && e.isPass()){
+				return true; 
+			}
+		}
+		return false;
+	}
+
+	public double countCredits(){
+		double sum = 0; 
+		
+		List<String> passedCodes = new ArrayList<String>(); 
+		for (Course course : courses){
+			if (hasPassed(course.getCode())){
+				if (!passedCodes.contains(course.getCode())){
+					passedCodes.add(course.getCode());
+				}
+			}
+		}
+
+		for (String code : passedCodes){
+			sum += getLastExam(code).getCourse().getCredits();
+		}
+		return sum;
+	}
+
+
+-------OPPGAVE 3--------
+
+public class ExamReader {
+	
+	
+
+	Collection<Exam> readExams(Reader input){
+		Collection<Exam> exams = new ArrayList<Exam>(); 
+
+		Scanner scanner = new Scanner(input); 
+
+		while (scanner.hasNextLine()){
+			String line = scanner.nextLine();  //Semester line
+			String time = line.trim(); 
+
+			if (!scanner.hasNextLine()){
+				scanner.nextLine(); 
+			}
+
+			String newLine = scanner.nextLine();
+			String[] split = newLine.split(" ");
+			String code = split[0].trim(); 
+			double credits = Double.parseDouble(split[1].trim());
+			String[] newSplit = split[2].split(" ");
+			List<Character> grades = new ArrayList<Character>(); 
+			for (int i = 0; i < newSplit.length(); i++){
+				grades.add(newSplit[i].charAt(0));
+			}
+
+			Course course = new Course(code);
+			course.setTime(time); course.setCredits(credits);
+
+			for (char grade : grades){
+				exams.add(new Exam(course,grade))
+			}
+
+		}
+
+		scanner.close(); 
+		return exams; 
+
+	}
+
+}
+
+Oppgave 4: 
+
+
+a) 
+
+public ExamRequirement(String course, int sinceYear){
+	this.mingrade = 'E';
+	this.sinceYear = sinceYear; 
+	this.course = course;
+}
+
+public ExamRequirement(String course, int sinceYear){
+	this(course,sinceYear,'E');
+}
+
+private boolean acceptsCourse(Course course){
+	return this.course == course && sinceYear > course.getYear(); 
+}
+
+public boolean accepts(Exam exam){
+	if (exam.getCourse() == this.getCourse() && exam.sinceYear > this.sinceYear && exam.getGrade() >= this.mingrade){
+		reutrn true; 
+	}
+
+	return acceptsCourse(exam.getCourse()) && ex
+}
+
+public final ExamRequirement atLeastCInTdt4100 = new ExamRequirement("TDT4100",0,'C'); 
+
+d) 
+
+Kunne definert Course som en abstrakt superklasse, og laget subklasser som da er fagene, som arver alle metodene og attributtene fra Course.
+
+e) 
+
+public interface IExamRequirement {
+	
+	boolean accepts(Exam exam); 
+
+}
+
+Ved å ha et funksjonelt grensesnitt som IExamRequirement så sikrer man at metodene som implementerer grensesnittet får metodene og attributtene som finnes i grensesnittet. Dette gjør at man vet at flere ulike klasser (som implementerer de samme grensenittene) har (blant annet ) de samme metodene. Et krav for funksjonelle grensesnitt er i tillegg at de metodene som impelmenterer dem må ha metoden som en "kjernefunksjon". 
+Med interfacet står alle de "public" metodene. 
+
+f) 
+
+public IExamRequirement atLeastCInTdt4100 = new ExamRequirement("TDT4100",0,'C');
+public IExamRequirement atLeastCinTdt4100 = (exam) -> "TDT4100".equals(exam.getCourse().getCode()) && exam.getGrade >= 'C';

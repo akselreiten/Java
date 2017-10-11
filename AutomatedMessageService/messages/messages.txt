@@ -1,0 +1,4 @@
+"Tekstmenlding 1 <3 haha!", morning, true
+"Testmelding 2😊. Dette er eksempel, med komma, overalt!", morning, true
+"Testmelding 3", night, true
+"Testmelding 4", night, true

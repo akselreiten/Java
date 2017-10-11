@@ -1,0 +1,30 @@
+Arv
+
+Abstrakte klasser
+Det er to grunner til å markere en klasse med abstract, og slik hindre instansiering. 
+1) Det gir ingen mening å ha instanser av klassen som ikke samtidig er en et objekt av en subklasse. Enten er du et objekt av en subklasse, eller ingenting. 
+2) Klassen er ufullstendig, da den ikke har implementerte metoder. 
+
+Klasser som har abstrakte metoder kalles abstrakte klasser
+Abstrakte klasser kan ha ikke-abstrakte metoder.
+
+En metode som markeres abstrakt MÅ redefineres av en underklasse som arver. 
+Feks. kan du ha: protected String getSjanger(); 
+I subklassem blir det da: 
+	protected String getSjanger(){
+		return "roman";
+	}
+
+
+En superklasse definerer det som er felles for subklassene. 
+En abstrakt superklasse stiller krav til metoder som må redefineres i subklassene. Dvs. at metodene deklareres i superklassen, men med ingen implementasjon. Man er slik trygg på at alle instanser av subklassene har redefinert dem. 
+
+Likhetstrekk med grensesnitt: 
+- Begge definerer metoder som klasser må implementere
+- Ingen av dem kan instansieres. 
+
+En abstrakt klasse samler felles felter og metoder og implementerer selv så mye som mulig felles logikk som subklassene kan utnytte gjennom arv. 
+Grensesnitt har kun abstrakte metoder, som må redefineres av de som implementerer grensesnittet. 
+Kun mulig å arve fra én klasse. 
+Kan implementere interfaces fra mange. 
+Et interface kan arve et annet. 

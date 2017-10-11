@@ -1,0 +1,295 @@
+Kont 2012
+
+Oppgave 1
+a)
+
+Konstruktører defineres på følgende måte: 
+
+public Class(){
+	...
+}
+
+Det er en metode med samme navn som selve klassen, og kjøres én (og kun én) gang i løpet av skriptet. Denne gangen er når klassen initialiseres. Fordelen med konstruktører er at du får satt "initialverdiene" på en ryddig måte. Man får mulighet til å validere inputet slik at man sikrer gyldigheten til startverdiene, og slik kan man sikre gyldigheten fra starten av. 
+
+b) 
+
+public Constructor(String a, int b){
+	if (isValidInput()){
+		this.a = a; 
+		this.b = b; 
+	}
+}
+
+Hensikten med å la en konstruktør ta en eller flere parametre er å initialisere disse parameterne. Du definerer globale parametre/attributter øverst i klassen, og konstruktøren tar inn verdier for disse og gir de en startverdi gitt at verdiene er gyldige. Verdien til parameterne er oftest verdier som trengs for å gi objektet en gyldig starttilstand. 
+
+
+c) 
+
+
+Public brukes når andre klasser skal kunne instansiere klassen direkte ved hjelp av "new". 
+Protected-konstruktører brukes for å initialisere felt i en superklasse og kalles av subklassen med "super()". 
+Private brukes kun på hjelpekonstruktører internt i en klasse. Kan ikke instansieres av noen andre klasser. 
+
+d) 
+
+
+Når man deklarerer en variabel som dette, får de som standard verdien 0. 
+Først: v0 = 0; 
+Så: v1 = v0++ = 1;
+	v0 = 1;
+Så: v2 = v0++ = 2; 
+	v0 = 2;
+
+v0 = 2, v1 = 0, v2 = 1;
+
+e) 
+
+For at java skal kunne opprette en konstruktør, må klassen være instansierbar. Det vil si at den IKKE kan være abstrakt. Det kan heller ikke være definerte noen andre konstruktører, for da bruker den bare den. 
+En slik konsturktør vil være public og ikke inneholde noen parametere. Altså en "tom" konstruktør.
+
+-----------OPPGAVE 2-------------
+a) 
+
+public class WordList {
+	
+	List<String> words = new ArrayList<String>(); 
+
+	public WordList(){
+
+	}
+
+	public boolean containsWord(String word){
+		return words.contains(word);
+	}
+
+	public Collection<String> getWordsStartingWith(String prefix){
+		Collection<String> prefixWords = new ArrayList<String>();
+
+		for (String word : words){
+			if (word.length() >= prefix.length() && word.substring(0,prefix.length())) {
+				prefixWords.add(word);
+			}
+		}
+
+		return prefixWords; 
+	}
+
+	public boolean addWord(String word){
+		if (!words.contains(word)){
+			words.add(word);
+			return true; 
+		}
+		return false;
+	}
+
+	public boolean removeWord(String word){
+		if (words.contains(word)){
+			words.remove(words.indexOf(word)); 
+			return true;
+		}
+		return false; 
+	}
+
+	public boolean removeWordsStartingWith(String prefix) {
+		Collection<String> prefixWords = getWordsStartingWith(prefix); 
+		if (prefixWords.size() == 0){
+			return false; 
+		}
+
+		for (String word : prefixWords){
+			removeWord(word);
+		}
+		return true; 
+	}
+
+b) 
+
+	public String getPrefix(String word, String suffix){
+		int index = word.length() - suffix.length();
+		if (index < 0) {
+			return null;
+		} 
+
+		String suff = word.substring(index); 
+		if (!suff.equals(suffix)){
+			return null;
+		}
+
+		return word.substring(0,index);
+	}
+
+	public boolean hasSuffixes(String prefix, List<String> suffixes){
+
+		Collection<String> prefixWords = getWordsStartingWith(prefix);
+
+		for (String suf : suffixes) {
+			tempWord = prefix + suf; 
+			if (!prefixWords.contains(tempWord)){
+				return false; 
+			}
+		}
+
+		return true; 
+
+	}
+
+	public List<String> findPrefixes(List<String> suffixes){
+		List<String> prefixes = new ArrayList<String>(); 
+
+		for (String word : words){
+			String prefix = getPrefix(word,suffixes.get(0));
+			if (prefix != null && hasSuffixes(prefix,suffixes)) {
+				prefixes.add(prefix);
+			}
+		}
+
+		return prefixes; 
+
+	}
+
+}
+
+
+c) 
+
+getPrefix() kunne vært static, da den ikke kaller på metoder som er ikke-static. 
+
+--------OPPGAVE 3---------
+a) 
+
+public interface Words {
+	
+	public boolean containsWords(String word); 
+
+	public Collection<String> getWordsStartingWith(String prefix); 
+
+	public boolean addWord(String word); 
+
+	public boolean removeWord(String word);
+
+}
+
+WordList wordList1 = new WordList(); 
+Instansierer et nytt objekt av typen WordList, og vil kunne kalle på alle metodene som finnes i WordList-klassen. 
+
+Words wordList2 = new WordList(); 
+Instansierer et nytt objekt av en klasse som implementerer interfacet Words, men wordList2 vil kun kunne benytte seg av metodene som finnes i Words-interfacet. 
+
+På venstre side så deklarerer du type, og begrenser dermed hvilke metoder objektet kan benytte seg av. 
+På høyre side så instansierer du. Dvs. du lager et objekt av en klasse. 
+
+
+b) 
+
+
+wordList1 instanceof Word == true, siden WordList nå implementerer interfacet Word. 
+wordList1 instanceof WordList == true, siden wordList1 er av klassen WordList.
+wordList2 instanceof Word == true, siden wordList1 er av typen Word.
+wordList2 instanceof WordList == true, siden wordList2 er et objekt instansiert av klassen WordList. 
+
+
+c) 
+
+
+public class DelegatingWordList implements Words{
+	private Words words1, words2;
+    public DelegatingWordList(Words words1, Words words2) {
+  		this.words1 = words1;
+        this.words2 = words2;
+  	}
+
+  	@Override
+  	public boolean containsWords(String word) {
+  		if (words1.containsWords(word) || words2.containsWords(word)){
+  			return true; 
+  		}
+  		return false;
+  	}
+
+  	@Override
+	public Collection<String> getWordsStartingWith(String prefix){
+		Collection<String> completeList = new ArrayList<List>(); 
+
+		Collection<String> list1 = words1.getWordsStartingWith(prefix); 
+		Collection<String> list2 = words2.getWordsStartingWith(prefix);
+
+		for (String word : list1){
+			if(!completeList.contains(word)){
+				completeList.add(word);
+			}
+		}
+
+		for (String word : list2){
+			if(!completeList.contains(word)){
+				completeList.add(word);
+			}
+		}
+
+		return completeList; 
+
+	}
+
+	@Override
+	public boolean addWord(String word){
+	
+		if (! containsWord(word)){
+			word1.add(word); 
+			return true;
+		}
+		return false;
+
+	} 
+
+	@Override
+	public boolean removeWord(String word){
+		return word1.removeWord(word) | word2.removeWord(word);
+
+	}
+
+}
+
+Words-interfacet har følgende metoder: containsWords(), getWordsStartingWith(), addWord(), removeWord(); 
+
+
+----------OPPGAVE 4----------
+
+public void read(InputStream input) {
+	
+	Scanner scanner = new Scanner(input); 
+
+	while (scanner.hasNext()){
+		String line = scanner.nextLine(); 
+
+			int hashtagIndex = line.indexOf("#"); int dashIndex = line.indexOf("-"); 
+
+			if (hastagIndex >= 0){
+				line = line.substring(0,hastagIndex).trim(); //remove the comment
+
+				if (line.length() <= 0){
+					continue; 
+				}
+
+				if (dashIndex >= 0) {
+					String[] split1 = line.split("-"); 
+					String prefix = split1[0];
+					String list = split1[1].split(",");
+
+					for (String s : list){
+						addWord(prefix + s)
+					} 
+				} else {
+					addWord(line);
+				}
+			} else {
+
+				if (dashIndex >= 0) {
+					String line.substring(0,dashIndex); 
+					addWord(line)
+				}
+
+			}
+
+	}
+
+
+}

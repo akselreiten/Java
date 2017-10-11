@@ -1,0 +1,26 @@
+Arrays and lists
+
+double[] value = new double[10] (array with 10 spots)
+double[] value = {1,2,3,4,5,6,7,8,9,10}
+value[0] = 1; 
+
+//varargs
+
+publoc void addScores(int... values) {
+	//Input is vararg, in the format values[]; 
+}
+
+//arraylist
+
+List<String> friends = new ArrayList<String>(); 
+friends.add("Cindy"); 
+friends.add("Mindy");
+friends.add(0,"Mark"); //adds Mark to the 0th position and pushes everything else to the right.
+names.set(0,"HAlvor"); //replaces whatever in the 0th position with Halvor.
+friends.remove(index), remember index here! 
+
+Easy to print arraylists. sysout(friends)
+
+//WHAT TO USE - ARRAYLIST OR ARRAYS
+If size never changes, use arrays. Remember arraylist is dynamic! 
+If collecting a long list of elements- use arrays 

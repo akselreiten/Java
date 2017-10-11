@@ -1,0 +1,66 @@
+Oppsummering: 
+For å gjøre om til en eller annen klasse: 
+Class.valueOf(String / int / char / double)
+Char.valueOf(char c) - > kan kun ta in char her. 
+
+character har alle isDigit, isLetter, isAlphabetic. Disse er nice booleans. 
+Character -> String: String.valueOf(char c); 
+String -> Character: Character.valueOf(string.indexOf(i)); 
+8
+
+
+	Character. 
+int 		compare(char a, char b); compares them numerically. 'F'.
+int 		compareTo(Character other)
+boolean 	equals(Object other); //Bruk heller == -operatoren. 
+			Husk at dersom du skal bruke denne kan ikke objektene være primitive. Må da være av typen Character. 
+int 		getNumericValue(char c)
+boolean		isAlphabetic(char c)
+boolean 	isDigit(char c); 
+boolean 	isLetter(char c)
+boolean		isLowerCase(char c); 	
+char 		toLowerCase(char c);
+boolean 	isWhitespace(char c); 
+boolean		isUpperCase();  		
+
+char		toUpperCase(char c)
+String		toString(char c);
+
+  	Integer.
+int 		compare(int x1, int x2); 
+int 		compareTo(Integer other);
+double		doubleValue() 			//Heller bruk Double.valueOf(int x)??
+Integer		getInteger(String num);
+int 		parseInt(String num); <--- BRUK DENNE
+String 		toString(int)    - Convert to String. 
+int 	 	valueOf(String);
+
+  	Double.
+int 		compare(double x1, double x2);
+int 		compareTo(Double other); 
+int 		intValue(); Double b = 2.0. b.intValue();
+boolean		isNaN(double v); 
+double 		parseDouble(String s); 
+String 		toString(double d); 
+double 		valueOf(String s);
+
+  	String.
+char 		charAt(int index); 
+int 		compare(String s1, String s2);
+int 		compareTo(String another); 
+boolean		contains(CharSequence sequence); String str = "testsetning"; str.contains("setn") == true; 
+boolean		contentEquals(CharSequence sequence); String str = "testsetning"; str.contentEquals("testsetning") == true; 
+boolean 	startsWith(String prefix);
+boolean		endsWith(String suffix);
+boolean		equals(String other);
+int 		indexOf(char c) eller indexOf(String string); 
+boolean 	isEmpty(); 
+int 		length(); 
+boolean 	matches(); 
+String[]	split(String regex);
+String 		substring(int beginIndex) // substring(int beginIndex, int upToIndex); 
+char[]		toCharArray(); 
+String 		toLowerCase(); 
+String 		toUpperCase();
+String 		trim(); 
+String 		valueOf(char / boolean / double / int / Object)
