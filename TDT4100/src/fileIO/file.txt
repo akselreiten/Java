@@ -1,2 +1,0 @@
-This is just some example text. Let's try and read it.
-If it works, it works. If it doesn't, it doesn't. 

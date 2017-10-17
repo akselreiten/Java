@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -20,8 +19,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-public class MessageService implements MessageListener{
+import org.omg.CORBA.portable.InputStream;
 
+public class MessageService implements MessageListener{
+	
 	public String filepath; 
 	public List<Message> messages; 
 	
@@ -33,6 +34,11 @@ public class MessageService implements MessageListener{
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+
+	// returns the text file
+	public File getMessagesFile() { 
+		return null;
 	}
 	
 	// returns a list with the message-objects

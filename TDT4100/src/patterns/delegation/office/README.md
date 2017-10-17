@@ -1,1 +1,0 @@
-# Kildekodemappe for øvingene
