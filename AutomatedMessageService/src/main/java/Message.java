@@ -1,4 +1,4 @@
-package iMessage;
+package main.java;
 
 public class Message {
 

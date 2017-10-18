@@ -1,4 +1,4 @@
-package iMessage;
+package main.java;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +24,8 @@ public class MessageService implements MessageListener{
 	public String filepath; 
 	public List<Message> messages; 
 	
+	// the class filepath of the messages file
+
 	public MessageService(String filepath){
 		this.filepath = filepath; 
 		
@@ -47,11 +49,11 @@ public class MessageService implements MessageListener{
 	// returns all messages that have been sent
 	public List<Message> getSentMessages(){
 		return messages.stream()
-				.filter(mess -> mess.hasBeenSent())
+				.filter(message -> message.hasBeenSent())
 				.collect(Collectors.toList());	
 	}
 	
-	// returns all messages that haven't been sent yet
+	// returns all messages that haven't been sent, i.e. isSent = false
 	public List<Message> getUnsentMessages(){
 		return messages.stream()
 				.filter(mess -> !mess.hasBeenSent())
@@ -61,6 +63,8 @@ public class MessageService implements MessageListener{
 	public void addMessage(Message message) {
 		if (!messages.contains(message)) {
 			messages.add(message);
+			
+			// Update the message
 			messageHasChanged(message);
 		}
 	}
@@ -190,7 +194,8 @@ public class MessageService implements MessageListener{
 	
 	public static void main(String[] args) throws IOException {
 		
-		String messagesPath = new File("").getAbsolutePath() + "/messages/messages.txt";
+		String messagesPath = new File("").getAbsolutePath() + "/resources/messages.txt";
+		
 		
 		MessageService ms = new MessageService(messagesPath);
 		
