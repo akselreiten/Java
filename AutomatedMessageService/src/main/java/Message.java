@@ -1,19 +1,20 @@
 package main.java;
 
+import java.util.Date;
+import java.util.List;
+
 public class Message {
 
-	private static int instanceCounter = 0; 
-	public int counter = 0; 
 	public String content; 
-	public String category; 
+	public List<String> categories; 
 	public boolean isSent; 
+	public Date datelimit; // sets the date that the message has to be sent before
 	
-	public Message(String content, String category) {
+	public Message(String content, List<String> categories, Date datelimit) {
 		this.content = content; 
-		this.category = category.toLowerCase(); 
+		this.categories = categories;
 		this.isSent = false;
-		instanceCounter++; 
-		counter = instanceCounter; 
+		this.datelimit = datelimit;
 	}
 	
 	public boolean hasBeenSent() {
@@ -24,24 +25,22 @@ public class Message {
 		if (bol) { this.isSent = true; }
 	}
 	
-	public int getInstanceCount() {
-		return counter;
-	}
-	
 	public String getContent(){
 		return content; 
 	}
 	
-	public String getCategory() {
-		return category; 
+	public List<String> getCategories() {
+		return categories; 
 	}
 	
+	public Date getDatelimit() {
+		return datelimit; 
+	}
 	
 	@Override
 	public String toString() {
-		return "Message #" + getInstanceCount() +  
-				"\nContent: " + getContent() + 
-				", Category: " + getCategory() + "\n";
+		return "Content: " + getContent() + 
+				"; Categories: " + getCategories() + "\n";
 	}
 	
 }

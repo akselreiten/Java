@@ -1,16 +1,14 @@
 package main.java;
 
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.Random;
 
@@ -18,50 +16,49 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
+
+
 public class MessageProgram implements MessageListener {
 
-	public String messagesFilepath; // the absolute path of a text file with messages
+	public String JSONPath; // the absolute path of a text file with messages
 	public String recipient; // the phone number or email of the recipient
 	public List<Message> messages; // A list containing all message object
 	
-	public MessageProgram(String messagesFilepath, String recipient){		
-		this.messagesFilepath = messagesFilepath;
+	public MessageProgram(String JSONPath, String recipient){		
+		this.JSONPath = JSONPath;
 		this.recipient = recipient;
 		
 		try {
-			this.messages = readMessagesFromFile(messagesFilepath);
-		} catch (FileNotFoundException e) {
+			this.messages = readMessagesFromJSONFile(JSONPath);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	// get list with all messages
 	public List<Message> getAllMessages(){
 		return messages; 
 	}
 	
-	// get list of all unsent messages
-	public List<Message> getUnsentMessages(){
-		return messages.stream()
-				.filter(mess -> !mess.hasBeenSent())
-				.collect(Collectors.toList());	
-	}
-	
 	// get a list of filtered messages based on isSent and category
-	// if category.equals(""), then all categories will be returned
 	public List<Message> getFilteredMessages(boolean isSent, String category){
 		return messages.stream()
 				.filter(mess -> mess.hasBeenSent() == isSent)
-				.filter(mess -> category.equals("") ? true : mess.getCategory().equals(category) 
-						|| mess.getCategory().equals("all"))
+				.filter(mess -> mess.getCategories().contains(category))
 				.collect(Collectors.toList());	
 	}
 	
 	// returns a random, unsent message with given category
-	// if category.equals(""), then all categories are evaluated
 	public Message getRandomUnsentMessage(String category){
-		List<Message> arr = getFilteredMessages(false,category);
+		
+		// extract only the ones that have a valid datelimit (the message's datelimit is higher than current date)
+		List<Message> arr = getFilteredMessages(false,category).stream()
+		.filter(mess -> mess.getDatelimit().compareTo(new Date()) > 0)
+		.collect(Collectors.toList());
+		
 		if (arr.size() > 0) {
 			int randomint = new Random().nextInt(arr.size());
 			return arr.get(randomint);
@@ -70,45 +67,31 @@ public class MessageProgram implements MessageListener {
 		}
 	}
 	
-	// read in the messages from file, make messages objects and add them to messages list
-	public List<Message> readMessagesFromFile(String filepath) throws FileNotFoundException {
-		List<Message> messages = new ArrayList<Message>();
-		Scanner scanner = new Scanner(new FileReader(filepath));
+	// read messages from JSON file, return list of message objects
+	public List<Message> readMessagesFromJSONFile(String filepath) throws IOException {
+		JsonReader reader = new JsonReader(new FileReader(filepath)); 
+		Message[] arr = new Gson().fromJson(reader, Message[].class);
+		reader.close();
 		
-		while (scanner.hasNextLine()) {
-			// messages has format: "MESSAGE","CATEGORY", "ISSENT"
-			String line = scanner.nextLine();
-			if (line.length() > 0) {
-				List<String> arr = splitString(line,",",true);
-				
-				String content = arr.get(0).substring(1,arr.get(0).length()-1);
-				String category = arr.get(1);
-				boolean isSent = Boolean.parseBoolean(arr.get(2));
-				
-				Message tempMessage = new Message(content, category); 
-				tempMessage.setSentStatus(isSent);
-				messages.add(tempMessage);
-			}
-		}
+		List<Message> messages = new ArrayList<Message>(Arrays.asList(arr));
 		
-		scanner.close();
 		return messages;
 	}
 	
-	// write messages objects to file
-	public void writeMessagesToFile(List<Message> messages) throws IOException {
+	// write messages to JSONFile
+	public void writeMessagesToJSONFile(String filepath, List<Message> messages) throws IOException {
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(messagesFilepath, false), "UTF-8"));
-		for (Message m : messages) {
-			// write the message to file
-			String mString = "\"" + m.getContent() + "\", " + m.getCategory() + ", " + Boolean.toString(m.hasBeenSent());
-			writer.write(mString);
-			writer.newLine();
-		}
+				new FileOutputStream(filepath, false), "UTF-8"));
+		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create(); 
+		gson.toJson(messages, writer);
+		
 		writer.close();
 	}
+		// write messages objects to file
+
 	
-	// add message to the messages list
+	// add message to messages
 	public void addMessage(Message message) {
 		if (!messages.contains(message)) {
 			messages.add(message);
@@ -117,6 +100,7 @@ public class MessageProgram implements MessageListener {
 		}
 	}
 	
+	// remove message from messages
 	// remove message from messages list
 	public void removeMessage(Message message) {
 		if (messages.contains(message)) {
@@ -125,6 +109,7 @@ public class MessageProgram implements MessageListener {
 			messageHasChanged(message); 
 		}
 	}
+	
 	
 	// send a message via iMessage to recipient
 	public void sendMessage(Message message, String recipient) {
@@ -147,54 +132,62 @@ public class MessageProgram implements MessageListener {
 		}
 	}
 	
-	
+	// method to update messages file whenever a change has been made to a message
 	@Override
 	// method to update the messages whenever there is a change to a message
 	public void messageHasChanged(Message message) {
 		
-		// update the textfile containing messages
+		// update the JSON file containing messages
 		try {
-			writeMessagesToFile(messages);
+			writeMessagesToJSONFile(JSONPath, messages);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 	
-	public List<String> splitString (String text, String seperator, boolean inQuotes){
-
-		String splitRegex = seperator; 
+	// checks the system time and determines the current category 
+	public String getCurrentCategory() {
+		// find out what time it is of the day and set category accordingly
+		Date date = new Date(); 
 		
-		// split on the comma only if that comma has zero, or an even number of quotes ahead of it.
-		if (inQuotes && seperator == ",") {
-			splitRegex = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
-		}
+		@SuppressWarnings("deprecation")
+		double time = date.getHours() + (double) date.getMinutes()/60;
 		
-		List<String> tokens = Arrays.asList(text.split(splitRegex, -1)); 
-		List<String> tokens_trimmed = new ArrayList<String>(); 
-		for (int i = 0; i < tokens.size(); i++) {
-			tokens_trimmed.add(tokens.get(i).trim()); 
-		}
+		String cat = ""; 
+		if (time >= 7 && time < 9) {
+			cat = "morning";
+		} else if (time >= 12 && time < 18) {
+			cat = "midday"; 
+		} else if (time >= 18 && time < 22) {
+			cat = "evening"; 
+		} else if ((time >= 22 && time <= 24) || (time >= 0 && time < 2)) {
+			cat = "night";
+		} 
 		
-		return tokens_trimmed; 
+		return cat;
 	}
-
 	
 	public void run() {
 		// find out what time it is of the day and set category accordingly
-		int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-		String currCategory = (hour <= 10 ? "morning" : (hour <= 17 ? "midday" : "night"));
+		String cat = getCurrentCategory();
 		
 		// find random new message and send to recipient
-		Message messageToBeSent = this.getRandomUnsentMessage(currCategory);
+		Message messageToBeSent = this.getRandomUnsentMessage(cat);
 		if (!(messageToBeSent == null)) {
 			sendMessage(messageToBeSent, recipient);
 		} else {
-			System.err.println("All messages of category \"" + currCategory + "\" and \"all\" have been sent already.");
+			// no messages to send at current time
+			if (cat.equals("")) {
+				System.err.println("No messages to send this time of day");
+			} else {
+				System.err.println("All messages of category \"" + cat + "\" have been sent already.");
+			}
 		}
 	}
 	
 	public static void main(String[] args) throws IOException {
-		String path = "/Users/halvorreiten/Documents/Programming/Java/AutomatedMessageService/src/main/resources/messages.txt";
+		String path = "/Users/halvorreiten/Documents/Programming/Java/AutomatedMessageService/src/main/resources/messages.json";
 		String recipient = "ha.reiten@gmail.com";
 		MessageProgram mp = new MessageProgram(path, recipient);
 		
