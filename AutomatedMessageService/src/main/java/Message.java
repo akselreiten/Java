@@ -20,7 +20,7 @@ public class Message {
 		return isSent; 
 	}
 	
-	public void setSendingStatus(boolean bol) {
+	public void setSentStatus(boolean bol) {
 		if (bol) { this.isSent = true; }
 	}
 	

@@ -1,0 +1,6 @@
+"En melding med mange, komma, ikke sant? 🍕", morning, false
+"Dette er en melding med smileyer ❤️🔥❄️", all, true
+"Dette er en helt annen melding", all, true
+"Tekstmelding nummer 4 🚗", all, true
+"Jeg er helt rå i java 😊", all, true
+"Den aller siste meldingen i dette dokumentet 🎉", all, true
