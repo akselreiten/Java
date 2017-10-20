@@ -51,4 +51,4 @@ Thumbs.db
 # Sensitive files #
 ###################
 messages.json
-^client_secret
+^client_secret.*
