@@ -24,6 +24,7 @@
 *.log
 *.sql
 *.sqlite
+*.classpath
 
 # OS generated files #
 ######################
@@ -39,4 +40,5 @@ Thumbs.db
 
 # Sensitive files #
 messages.json
+
 
