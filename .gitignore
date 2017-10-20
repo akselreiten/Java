@@ -41,4 +41,9 @@ Thumbs.db
 # Sensitive files #
 messages.json
 
+# Other #
+########
+.settings
+.project
+
 
