@@ -21,6 +21,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
 
+
 public class MessageProgram implements MessageListener {
 
 	public String JSONPath; // the absolute path of a text file with messages
@@ -101,7 +102,6 @@ public class MessageProgram implements MessageListener {
 	}
 	
 	// remove message from messages
-	// remove message from messages list
 	public void removeMessage(Message message) {
 		if (messages.contains(message)) {
 			messages.remove(message); 
@@ -187,8 +187,9 @@ public class MessageProgram implements MessageListener {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		String path = "/Users/halvorreiten/Documents/Programming/Java/AutomatedMessageService/src/main/resources/messages.json";
+		String path = "/Users/halvorreiten/Documents/Programming/Java/AutomatedMessageProgram/src/main/resources/messages.json";
 		String recipient = "ha.reiten@gmail.com";
+		//String recipient2 = "+4792881485";
 		MessageProgram mp = new MessageProgram(path, recipient);
 		
 		mp.run();

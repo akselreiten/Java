@@ -5,6 +5,8 @@
 *.exe
 *.o
 *.so
+*.class
+/bin/
 
 # Packages #
 ############
@@ -38,12 +40,14 @@ Thumbs.db
 /.metadata/
 /.recommenders/
 
-# Sensitive files #
-messages.json
-
-# Other #
-########
-.settings
+# Eclipse #
+###########
+.settings/
 .project
+*.launch
+.buildpath
 
 
+# Sensitive files #
+###################
+messages.json
