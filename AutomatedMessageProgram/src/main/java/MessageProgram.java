@@ -20,8 +20,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
-
-
 public class MessageProgram implements MessageListener {
 
 	public String JSONPath; // the absolute path of a text file with messages
@@ -134,7 +132,6 @@ public class MessageProgram implements MessageListener {
 	
 	// method to update messages file whenever a change has been made to a message
 	@Override
-	// method to update the messages whenever there is a change to a message
 	public void messageHasChanged(Message message) {
 		
 		// update the JSON file containing messages
@@ -150,7 +147,6 @@ public class MessageProgram implements MessageListener {
 	public String getCurrentCategory() {
 		// find out what time it is of the day and set category accordingly
 		Date date = new Date(); 
-		
 		@SuppressWarnings("deprecation")
 		double time = date.getHours() + (double) date.getMinutes()/60;
 		
@@ -168,6 +164,11 @@ public class MessageProgram implements MessageListener {
 		return cat;
 	}
 	
+	public void sendEmail(String from, String to, String subject, String content, String passwordPath) {
+		Email email = new Email(from, passwordPath);
+		email.sendMail(to, subject, content);
+	}
+	
 	public void run() {
 		// find out what time it is of the day and set category accordingly
 		String cat = getCurrentCategory();
@@ -176,6 +177,15 @@ public class MessageProgram implements MessageListener {
 		Message messageToBeSent = this.getRandomUnsentMessage(cat);
 		if (!(messageToBeSent == null)) {
 			sendMessage(messageToBeSent, recipient);
+			
+			// send email notifictation
+			String subject = "You sent a new message to " + recipient + " using AutomatedMessageProgram";
+			String to = "ha.reiten@gmail.com";
+			String content = "<p>You sent a new message to " + recipient + " on the following time: " + new Date().toString() + "</p>"
+					+ "<p>Message contents:</p>"
+					+ "<p>" + messageToBeSent.getContent() + "</p>";
+			sendEmail(to, to, subject, content, "/Users/halvorreiten/Documents/Programming/.password.txt");
+			
 		} else {
 			// no messages to send at current time
 			if (cat.equals("")) {
