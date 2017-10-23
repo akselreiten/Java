@@ -1,19 +1,24 @@
 [
   {
-    "content": "Test 1",
+    "content": "LoremIpsum",
+    "categories": [
+      "morning",
+      "midday",
+      "evening",
+      "night"
+    ],
+    "isSent": false,
+    "dateValidFrom": "Jan 1, 2017 12:00:00 AM",
+    "dateValidTo": "Jan 1, 2020 12:00:00 AM"
+  },
+  {
+    "content": "TestMessage",
     "categories": [
       "morning",
       "night"
     ],
     "isSent": false,
-    "datelimit": "Oct 20, 2017 12:55:43 AM"
-  },
-  {
-    "content": "Test 2",
-    "categories": [
-      "morning"
-    ],
-    "isSent": false,
-    "datelimit": "Oct 20, 2017 12:55:43 AM"
+    "dateValidFrom": "Jan 1, 2017 12:00:00 AM",
+    "dateValidTo": "Jan 1, 2020 12:00:00 AM"
   }
 ]
